@@ -37,6 +37,26 @@
 
 ### Footprinting and scanning
 #### Mapping a network
+- after identifying the named targets we proceed to identify the network nodes running the system
+- either local or remote networks need to be identified properly
+- start by determining what hosts are up and running on the target scoped network
+- **ping sweeping** will help identify running nodes on that often very large network range
+- use tools like `fping` to scan the networks, like for example `fping -a -g 10.0.5.0/24`, or with a start and end address like `fping -a -g 10.0.5.4 10.0.5.57`
+- supress the `Host unreachable` errors by piping `stderr` to `/dev/null`
+- tools like `nmap` are the gold standard for advanced host discovery
+- `nmap` supports plain ping scanning, like `nmap -sn 192.168.0.0/24`
+- you can also use a file with IP's: `nmap -sn -iL ip-list.txt` by adding one IP or range per line
+- other host discovery techniques are supported, like TCP connection requests, or UDP packet probes
+- this will provide you with a narrowed down list of live hosts to which you can target your attacks towards
+
+#### OS fingerprinting
+- to get further information about the target hosts use OS fingerprinting
+- send specific requests to live systems and analyze the responses
+- after this you'll have a list of every live system on the network and what OS it might be running
+- active fingerprinting can be done using `nmap`
+- use the `-O` flag to try and identify what a target exactly is, like `nmap -Pn -O 192.168.1.99` (`-Pn` skips ping probing, as you have already confirmed the host is up)
+- fine-tune and target your fingerprinting to get reliable target information
+
 #### Port scanning
 
 ### Vulnerability assessment

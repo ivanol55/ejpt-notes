@@ -1,4 +1,4 @@
-# ejpt exam notes
+# eJPT exam notes
 ----
 
 ## Introduction

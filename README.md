@@ -74,6 +74,8 @@
 - you can identify running hosts that have no ping response by scanning usually open ports like `80`, `443`, `22`, `25`, `8080` or `445`
 - be prepared for firewall reconaissance, which can ge recognized with anomalous `nmap` results, like unidentifiable banner responses for versions or a `tcpwrapped` response on a well-known port
 - the `--reason` flag on `nmap` will give you more information about why it thinks a port is closed
+- remember to **scan ports higher than 1024** with the `-p` flag, some higher ports could be hiding important services and the default `nmap``scan only goes up to port 4096
+- the `nmap` toolset has useful tools for information gathering with the `--script` flag, like `mongodb-info` to get information from a mongodb instance, `vuln` to scan a service for potential CVE's, or `mysql-*` to run all mysql scripts against an open mysql install
 
 #### masscan
 - `nmap` is a powerful but stealthy and slow tool

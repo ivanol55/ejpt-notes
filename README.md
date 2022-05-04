@@ -58,6 +58,27 @@
 - fine-tune and target your fingerprinting to get reliable target information
 
 #### Port scanning
+- once we know what nodes are available, we need to know what is in each of them
+- check for open ports on the nodes and their associated services
+- check for the software versions of the program running on that port, it will be helpful for exploitation
+- create a list of what services are on each machine and what you can take advantadge from on them
+- port scanners like `nmap` automate service identification and perform useful tasks like firewall checks
+- port scanners identify open, closed and firewall-filtered ports by checking for behavior of the TCP/IP standard, like getting back an ACK or RST
+- TCP scans are noisy on logs, so we can also use SYN scans, which analyzes the response but doesn't connect to the target
+
+#### nmap
+- all these tasks can be handled with nmap with the flags `-sT` (TCP connect scan), `-sS` (TCP SYN scan), or `-sV` (version detection scan)
+- version detection scans work by parsing the `banner` sent back by an application
+- if no banner gets back, `nmap` will send back different kinds of probes to try and guess the program listening on the port
+- if you are positive pings are blocked and a machine is up, you can use the `-Pn` flag to force scanning without ping-sweeping the machine
+- you can identify running hosts that have no ping response by scanning usually open ports like `80`, `443`, `22`, `25`, `8080` or `445`
+- be prepared for firewall reconaissance, which can ge recognized with anomalous `nmap` results, like unidentifiable banner responses for versions or a `tcpwrapped` response on a well-known port
+- the `--reason` flag on `nmap` will give you more information about why it thinks a port is closed
+
+#### masscan
+- `nmap` is a powerful but stealthy and slow tool
+- `masscan` can be used to scan large networks very quickly, but at the cost of accuracy
+- try performing host discovery with `masscan`, then get some details with `nmap`
 
 ### Vulnerability assessment
 #### Vulnerability scanning and assessment

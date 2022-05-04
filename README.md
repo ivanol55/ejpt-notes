@@ -84,7 +84,24 @@
 
 ### Vulnerability assessment
 #### Vulnerability scanning and assessment
+- sometimes a client only needs a vulnerability assessment rather than a penetration test
+- we need to provide the know-how to fit the needs of the client to solve their problem
+- a vulnerability scan is faster and has a lighter load on the infrastructure
+- in this scenario you do not proceed to the exploitation phase
+- for this task, specialized tools are used, **vulnerability scanners**
+- these tools use a suite of integrated checks to automatically identify vulnerabilities, like port scanning, software version checks, common exploit testing, configuration file validation, windows registry entries
+- the purpose is to find vulnerabilities and misconfigurations on the infrastructure
+- the software is kept up to date with vulnerability database information as needed
+- the more up to date the software is, the better
+- examples are `OpenVAS`, `Nexpose` or `Nessus`
+- if you need to test custom applications, a vulnerability scanner may not be enough and you will need to check for vulnerabilities manually through the code or through manual testing, depending on your scenario
+
 #### Under the hood of vulnerability scanners
+- vulnerability scanners like `Nessus` tend to work in a client-server setup which provide a web UI to configure and run scans
+- the tools work by sending probes and scans to target machines and processing the results into actionable data
+- steps are similar to the manual vulnerability scanning of a machine: first it checks if it's up and running, identifies what it's running and what ports it has open, and what potential vulnerabilities that software has
+- it identifies these vulnerabilities by checking for the software versions against a vulnerability database
+- the scanner checks if the vulnerability actually exists on the target system, a step that can be prone to false positives depending on the tests that it runs
 
 ### Web attacks
 #### Web server fingerprinting

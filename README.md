@@ -104,12 +104,98 @@
 - the scanner checks if the vulnerability actually exists on the target system, a step that can be prone to false positives depending on the tests that it runs
 
 ### Web attacks
-#### Web server fingerprinting
-#### HTTP verbs 
+#### Manual web server fingerprinting
+- web applications make up the vast majority of the internet-facing attack surface
+- these applications run behind web servers, so knowing about this software is vital
+- web server security tends to be overlooked, making it a good attack fector for penetration testers
+- start by fingerprinting, find out exactly what web server is running the application
+- find out the software distribution (`apache`, `nginx`, `iis`), its version, and the OS that's running underneath
+- this fingerprinting can be manually done using `netcatp`, with a technique named *banner grabbing* by connecting to the target server and seeing what the server sends back
+- connect with `netcat [target IP] [target port]` and send a HEAD HTTP request, like `HEAD / HTTP/1.0`
+- the `Server:` response block will have the banner information you need
+- `netcat` only support HTTP, not HTTPS. To connect to a server only accepting HTTPS, use `openssl s_client -connect [target IP]:[target TLS port]`
+- system administrators can modify the banners to confuse you to make banner grabbing harder
+
+#### Automated web server fingerprinting
+- to avoid depending on banners alone, use more sophisticated and automated tools
+- these tools are harder to trick by system administrators with banner modification
+- a good tool to keep in mind is `httprint`, which will use signature-based techniques to identify webservers
+- use it for example like `httprint -P0 -h [target host] -s /usr/share/httprint/signatures.txt`
+
+#### HTTP verbs
+- HTTP verbs are the actions a client or server are capable of performing in an exchange, like `HEAD`, `GET`, `PUT` or `POST`
+- `GET` allows passing arguments through the URL into the webserver using the headers
+- `POST` is used to submit form data, which has to be in the message body
+- `HEAD` is similar to `GET`, but will only request the headers without the body to save on data transfer
+- `PUT` is used to upload files into servers, very dangerous if  misconfigured to be vulnerable
+- `DELETE` is used to delete files from servers, another dangerous directive if misconfigured
+- `OPTIONS` can be used to see what HTTP verbs a server allows, which can vary depending on the queried hostname
+- `REST API`s are a specific type of web application that rely heavily on all HTTP verbs
+- they are used to retrieve and handle data through a web endpoint, like saving data to a database using `PUT`
+- always verify if an endpoints accepting certain HTTP verbs are really vulnerable or they are working as intended, like verifying if the file you `PUT` actually exists
+- to try exploiting HTTP endpoints, first enumerate what HTTP verbs are available
+- to exploit delete you can just send a query with the file you want to delete using `netcat` or `openssl`, like `DELETE /path/to/resource.txt HTTP/1.0`
+- to exploit `PUT`, first check the file size of your payload with `wc -m payload.php`, then use that size when sending the file into the web server, in this example sending a 20 character script:
+```
+$ netcat victim.site 80
+PUT /payload.php HTTP/1.0
+Content-type: text/html
+Content-length: 20
+
+<?php phpinfo(); ?>
+```
+
 #### Directories and file enumeration
+- some sites or directories may be purposefully unindexed from search engines
+- these directories usually hide useful information
+- even if hidden from indexers, they will still be available to access
+- these could contain new and untested features, backup files, testing information, developer notes... useful information for attacking
+- this can give you access to sensitive information like backend database addresses, backup locations, feature test credentials and more
+- use tools to enumerate or brute-force finding these hidden locations
+- brute-forcing is very inefficient, time-consuming and noisy and should only be used as a last resort
+- by knowing the common names for useful directories we can optimize our search
+- search for common file extensions like `.old`, `.bak`, `.txt`
+- the most common tool for this task is `dirbuster`, a java application for enumerating web resources
+- set a target, set your dictionary and let `dirbuster` discover information for you
+- a command-line alternative is `dirb`, you can run it with just `dirb [target URL]`
+
 #### Google hacking
+- active information gathering can be a log-noisy process
+- use search engines to perform passive information collection and find hidden but indexed resources
+- use [advanced search engine features](https://developers.google.com/custom-search/docs/xml_results) like searching for file extensions or searching for parameters inside of a URL or title
+- combine advanced expressions to find exactly what you need
+- some [pre-created searches](https://www.exploit-db.com/google-hacking-database) can give you a head start
+
 #### Cross-site scripting
+- this type of vulnerability lets an attacker take over control of some content on a web application
+- targets the web application users
+- allows modifying the site content at runtime
+- injects malicious content that can steal private information, like the user session cookie for impersonation
+- exists when the application uses unfiltered user input to buiild the application's output, like request headers, cookies, form inputs, and GET or POST parameters
+- you can craft output HTML and JavaScript code to attack other application users
+- this attack is hard to spot, as it is usually stealthy and runs on the background
+- user impersonation, depending on the user, can lead to a complete site takeover
+- to search for cross-site scripting opportunities, look for submitted parameters that appear on the page
+- usually vulnerable elements are comments, user profiles, and forum posts
+- test first by injecting harmless values, like `i` or `pre` html tags to see if they are executed
+- these attacks can be *reflected* (sent with the request, like the example above, by posting a link on social media that executes the crafted request), *persistent* (stored on the web server that is run when a user loads the page) or *DOM-based*
+- use automated tools to check for these attacks, like `xsser`: `xsser --url '[potentially vulnerable site]' -p '[parameters to send into the request]'`
+- xsser can even automatically test for common exploits: `xsser --url '[potentially vulnerable site]' -p '[parameters to send into the request]' --auto`
+- Or try sending a custom crafted payload: `xsser --url '[potentially vulnerable site]' -p '[parameters to send into the request]' --Fp "<script>alert(1)</script>"` 
+- these are `POST` requests for forms. If the vulnerable target is a `GET` request, just remove the `-p` flag and pass the entire url to the `--url` flag
+
 #### SQL Injections
+- most web applications use some kind of backend database to store their data
+- applications interact with backends using `SQL` queries
+- SQL injection attacks allow us to access data on the backend using especially crafted application requests
+- usually you need to connect to a database and authenticate to access data, but web applications already have authentication built-in to query data
+- we can use parameter-dependant web application endpoints, like a product listing or a search, to add in our especially crafted SQL statement and access data
+- several attack types exist, like comparation attacks that add `OR 'a' = 'a'`, or `UNION` statements to add a second query, which allows us to query any data we want
+- to perform SQL injection we need to find a vulnerable endpoint, we should check all supplied user inputs on the site, like `GET` or `POST` HTTP request parameters, or HTTP Headers
+- keep in mind not only `SELECT` statements are available, but any action that could be performed by the user, like deleting the database, is available to the executing user
+- especially crafting SQL injections is hard, we can use automated tools to find vulnerable endpoints, like `sqlmap`
+- the tool's syntax is simple: `sqlmap -u [target URL] -p [injectable parameter] [extra options]`
+- This defaults to `GET` requests, you can send a `POST` instead by using `--data=[POST data]`
 
 ### System attacks
 #### Malware and backdoors 

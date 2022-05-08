@@ -262,8 +262,18 @@ Content-length: 20
 - once we know the target has these shares, we can use a null session attack to access the administrative shares on it, with `NET USE \\[target host]\[administrative share] '' /u:''` on windows, or `smbclient //[target host]/[administrative share] -N` on linux
 - keep in mind this only works with the `IPC$` administrative share, not the drive access share
 - this task can be automated with tools like `enum` on windows (`enum -S [target host]` to enumerate shares, `-U` to enumerate users, `-P` to attempt an attack), or `enum4linux` on the linux side, with the same usage as the `enum` windows tool, plus more features
+- get target info with `enum4linux -n [target host]`, then list shares on the host with `enum4linux -S [target host]`. you can then access the files with `smbclient //[target host]/[share] -N`
+- navigate the samba share with `cd [directory]`, download files with `get [file]`
+- an alternative tool is `smbmap`, very simple to use to enumerate: `smbmap -H [target host]`
+- try all shares, even if they don't report as public. Sometimes null sessions will just log you in!
+- combine `smbmap -H` and `enum4linux -U`, as some users may have non-discoverable shares you're missing
+- some shares may need bruteforcing from time to time in terms of naming. you can search from a wordlist by using `enum4linux -s [wordlist] [target host]`
 - `nmap` also has samba information enumeration and attack tools with scripts like `smb-enum-shares`, `smb-enum-users` or `smb-brute`
+- for a linux host the most effective tool order is `enum4linux -n [target host]`, `enum4linux -S [target host]`, test connecting to all shares with `smbclient //[target host]/[share] -N`, enumerate users with `enum4linux -U [target host]`, try `smbclient //[target host]/[discovered user name] -N`, and finally maybe bruteforcing common share names with `enum4linux -s [wordlist] [target host]`
+- if shares are password-protected, maybe you can complement this with the password cracking section to get user share access!
 
 #### ARP poisoning
+
+
 #### Metasploit
 #### Meterpreter

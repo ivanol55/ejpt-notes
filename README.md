@@ -273,7 +273,16 @@ Content-length: 20
 - if shares are password-protected, maybe you can complement this with the password cracking section to get user share access!
 
 #### ARP poisoning
-
+- powerful attack used to intercept network traffic
+- switching communication uses the ARP cache table to route local packets
+- if we can manipulate the ARP table, we can receive traffic destined to other hosts
+- if both parties involved in communication are manipulated, we perform a man-in-the-middle attack
+- we do this by sending gratuitous ARP replies until hosts learn that we're the ARP host they're looking for thanks to race conditions
+- this attack can be made larger by impersonating a router and capturing the traffic on the entire network
+- this can be automated with available tools for `ARP Spoofing` in the `Dsniff` package, of which we will specifically use `arpspoof`
+- before using this tool we need to enable traffic forwarding with `echo 1 > /proc/sys/net/ipv4/ip_forward`
+- after this we run `arpspoof -i [interface] -t [target] -r [host]`, where `interface` is the network interface ID we want to use to send ARP spoofing traffic, and `target` and `host` are the victim IP addresses we want to into man-in-the-middle
+- after this, run `wireshark` and look at the intercepted traffic
 
 #### Metasploit
 #### Meterpreter

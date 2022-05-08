@@ -199,8 +199,33 @@ Content-length: 20
 
 ### System attacks
 #### Malware and backdoors 
+- software used to misuse a computer system to cause a denial of service, spy on users or get unauthorized control over systems
+- usually used by cybercriminals
+- can be sometimes used in a cybersecurity engagement
+- classified based on its behavior
+- very useful kinds of malware tools are backdoors, which allow you to stealthily connect to the target once it's infected
+- connecting in reverse (from the target to the pentester's machine) will avoid firewall blocks and raise less alarms
+- rootkits allow attackers to get privileged access to system resources
+- bootkits circumvent OS protection by running during the bootstrap phase before the system can protect itself
+
 #### Password attacks
+- passwords are usually the only security mesure in exposed services like a web application or a vulnerable remote instance
+- passwords are usually stored in files or databases, which if stored in cleartext can be very useful for exploitation and access
+- even if hashed or encrypted, sometimes passwords can be cracked, ro restored to cleartext by brute-forcing them
+- it's a process of guessing all combination until the matching one is found
+- we can also use dictionary attacks with probable or weak largely used passwords
+- automated tools exist to make the process faster, like `john the ripper` provided a list of hashes, it is an extremely fast tool thanks to the heavy use of parallelization
+- we convert the hashes and users into a format `john` understands, like using `unshadow` to merge `/etc/passwd` and `/etc/shadow` and pass it into the tool to try to crack passwords
+- view the results with `john --show [original hash file]`
+- we can also provide a caracking wordlist for a dictionary attack with the `--wordlist` flag
+- to detect variations like `p@ssw0rd` use dictionary mangling, enabled with the `--rules` flag
+
 #### Buffer overflow attacks
+- many exploits available leverage a buffer overflow vulnerability in software
+- this attack writes commands outside of its memory bounds to change application behavior
+- this allows an attacker to write arbitrary code into the computer's RAM
+- writing buffer overflow attacks requires deep knowledge of comupting and applications
+- we can use already developed exploits through the `metasploit framework` covered at the end of this course
 
 ### Network attacks
 #### Authentication cracking 

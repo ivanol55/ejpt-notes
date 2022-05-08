@@ -310,3 +310,20 @@ exploit
 ```
 
 #### Meterpreter
+- powerful shell option from metasploit as a payload
+- allows takeover of target machine
+- useful functions built-in for privilege escalation, information gathering, file transfer, backdoor installation and more
+- available as `bind` or `reverse` shells
+- multiple sessions available on the same `metasploit` console
+- ability to send sessions to background and send exploits to them with `background` inside meterpreter
+- list sessions on metasploit with `sessions -l`, attach to one with `session -i [session ID]`
+- gather information like machine and OS data, network configuration, routing table, information about the current user
+- `sysinfo` provides information about OS-level values, like computer name, OS or architecture
+- `ifconfig` returns network interface configuration and information like IP addresses, netmasks and MAC addresses
+- `route` displays the system's route table
+- `getuid` displays the current user running the metasploit process
+- `getsystem` tries to escalate privileges on the target host with several pre-implemented techniques, with option to use `exploit/windows/local/bypassuac` to bypass User Account Control and escalate privileges if present
+- we can use the new privileges to dump system information, like hashes, using `post/windows/gather/hashdump`, which we can proceed to crack using tools like `john the ripper`
+- send and receive files from the compromised host with `download [compromised file] [local path]` and `upload [local file] [remote directory]`
+- get a traditional shell with `shell`, go back to meterpreter with `exit`
+- all of these commands have a help page available, for example `upload -h`, or jusr use `help` to display available meterpreter commands

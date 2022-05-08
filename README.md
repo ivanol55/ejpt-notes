@@ -243,9 +243,27 @@ Content-length: 20
 - several tools are available to convert almost any hash file to `john`-consumable format as python scripts under `/usr/share/john/`
 
 #### Windows shares
-- 
+- Windows is one of the most used desktop operating systems especially on enterprise networks
+- a pentester needs to be able to exploit its vulnerabilities
+- tends to be used for authentication, file sharing and printer management
+- resource sharing on these environments are based on `NetBIOS`
+- when a computer gets a `NetBIOS` query it can answet with its hostname, NetBIOS name, Domain and network shares
+- these shares can be very dangerous when used improperly
+- there are also some special administrative shares for Windows administrators to access drives or windows installation directories
+- a historical vulnerability leveraging windows shares is called `null session`
 
 #### Null sessions
+- used to enumerate information about passwords, system users, system groups and running system processes
+- `null sessions` are remotely exploitable
+- modern systems are not vulnerable to null session attacks, but legacy installations are still an important attack vector
+- this attack lets us connect to an Administrative share without the need of authentication
+- first step is share enumeration. we can use some built-in tools, like `nbstat` on windows (`nbstat -A [target host]`) to identify if the target has any network shares and `NET VIEW [target host]` to view its available network shares
+- on Linux we'll use the `samba` tool suite, following the same steps as before, displaying network share availability with `nmblookup -A [target host]` and looking at available shares with `smbclient -L //[target host] -N`, with the perk that this tool also displays the administrative shares
+- once we know the target has these shares, we can use a null session attack to access the administrative shares on it, with `NET USE \\[target host]\[administrative share] '' /u:''` on windows, or `smbclient //[target host]/[administrative share] -N` on linux
+- keep in mind this only works with the `IPC$` administrative share, not the drive access share
+- this task can be automated with tools like `enum` on windows (`enum -S [target host]` to enumerate shares, `-U` to enumerate users, `-P` to attempt an attack), or `enum4linux` on the linux side, with the same usage as the `enum` windows tool, plus more features
+- `nmap` also has samba information enumeration and attack tools with scripts like `smb-enum-shares`, `smb-enum-users` or `smb-brute`
+
 #### ARP poisoning
 #### Metasploit
 #### Meterpreter

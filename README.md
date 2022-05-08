@@ -229,7 +229,22 @@ Content-length: 20
 
 ### Network attacks
 #### Authentication cracking 
+- sometimes you don't have access to password hashes
+- performing pure network brute-force attacks is slow and inefficient because of the communication time it takes to test remote authentication
+- because of this, network-based password guessing relies on dictionary attacks
+- most tools use a list of default usernames and easy passwords
+- you can install password lists on kali with the `seclists` package, which will add the lists to `/usr/share/seclists/Passwords/`
+- various tools can be leveraged to automate authentication cracking, the most frequent being `hydra`, which includes many modules to automatically try to crack different protocols
+- choose the module with the -U flag, like `hydra -U rdp` to try cracking RDP credentials
+- basic usage goes as `hydra -L [user list] -P [password list] [service]://[target server] [options]` (the `service` format replaces the `-U` flag)
+- you can also use other tools, like `nmap`'s ssh bruteforce script: `nmap -p [ssh socket port] --script ssh-brute --script-args userdb=[user list file] [target]`
+- there's a metasploit module too, `auxiliary/scanner/ssh/ssh_login`, it's useful to try to crack root user access by setting `USERPASS_FILE` to `/usr/share/wordlists/metasploit/root_userpass.txt`, but remember to set `verbose` to `true` and `STOP_ON_SUCCESS` to `true`
+- an example on using local hashes to crack passwords with `john the ripper` is `john [hash file] --wordlist=[wordlist]`, and usually you pass in the `seclists` package wordlist
+- several tools are available to convert almost any hash file to `john`-consumable format as python scripts under `/usr/share/john/`
+
 #### Windows shares
+- 
+
 #### Null sessions
 #### ARP poisoning
 #### Metasploit

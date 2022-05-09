@@ -327,3 +327,12 @@ exploit
 - send and receive files from the compromised host with `download [compromised file] [local path]` and `upload [local file] [remote directory]`
 - get a traditional shell with `shell`, go back to meterpreter with `exit`
 - all of these commands have a help page available, for example `upload -h`, or jusr use `help` to display available meterpreter commands
+
+### Post-course learnings
+#### Advanced meterpreter and metasploit:
+- You can use `meterpreter` sessions and `metasploit` to **route traffic**
+- once you compromise a host and create persistance, use meterpreter's `autoroute` tool to automatically route traffic to other networks, like `run autoroute -s [target network] [target netmask]` to a network visible by the compromised system
+- you can use `portfwd` on `meterpreter` to easily use your local tools on remote systems, like `portfwd -l [local port] -p [port on target machine] -r [remote target host, accessible thanks to autoroute]`
+- use this to further launch tools towards remote systems
+- `autoroute` only adds routes to `metasploit`, but `portfwd` forwardings are available system-wide
+- mass scan remote networks discovered from inside `metasploit` with the `scanner/portscan/tcp` metasploit module, then `portfwd` into the machines you discover to launch further scans with nmap (or keep using the `metasploit` module) 

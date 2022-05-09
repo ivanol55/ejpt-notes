@@ -335,4 +335,5 @@ exploit
 - you can use `portfwd` on `meterpreter` to easily use your local tools on remote systems, like `portfwd -l [local port] -p [port on target machine] -r [remote target host, accessible thanks to autoroute]`
 - use this to further launch tools towards remote systems
 - `autoroute` only adds routes to `metasploit`, but `portfwd` forwardings are available system-wide
-- mass scan remote networks discovered from inside `metasploit` with the `scanner/portscan/tcp` metasploit module, then `portfwd` into the machines you discover to launch further scans with nmap (or keep using the `metasploit` module) 
+- mass scan remote networks discovered from inside `metasploit` with the `scanner/portscan/tcp` metasploit module, then `portfwd` into the machines you discover to launch further scans with nmap (or keep using the `metasploit` module)
+- as a first reconaissance step you can also use the `use post/multi/gather/ping_sweep` module to skip using ports
